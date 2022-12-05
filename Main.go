@@ -1,10 +1,10 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-)
+import "github.com/luizarnoldch/neo4j-Golang/application"
+
+func main() {
+	application.Start()
+}
 
 /*
 func main() {
@@ -78,23 +78,54 @@ func main() {
 	_, err = session.ExecuteRead(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
 		// Code within this function might be invoked more than once in case of
 		// transient errors.
+
 		readPersonByName := `
-			MATCH (p:Person)
-			WHERE p.name = $person_name
-			RETURN p.name AS name`
-		result, err := tx.Run(ctx, readPersonByName, map[string]any{
-			"person_name": "Alice",
-		})
+				MATCH (n:Item) RETURN n.id, n.name LIMIT 100`
+		result, err := tx.Run(ctx, readPersonByName, map[string]any{})
+
+
+			readPersonByName := `
+				MATCH (p:Person)
+				WHERE p.name = $person_name
+				RETURN p.name AS name`
+			result, err := tx.Run(ctx, readPersonByName, map[string]any{
+				"person_name": "Alice",
+			})
+
+
 		if err != nil {
 			return nil, err
 		}
+
 		// Iterate over the result within the transaction instead of using
 		// Collect (just to show how it looks...). Result.Next returns true
 		// while a record could be retrieved, in case of error result.Err()
 		// will return the error.
+
 		for result.Next(ctx) {
-			fmt.Printf("Person name: '%s' \n", result.Record().Values[0].(string))
+			//record1 := result.Record()
+			record2 := result.Record().Values[1]
+
+			//fmt.Println(record)
+			//fmt.Println(record1)
+			fmt.Println(record2)
+			//fmt.Println(record2.(string))
+			//fmt.Printf("Person name: '%s' \n", name)
+			//fmt.Printf("Person name: '%s' \n", result.Record().Values[0].(string))
 		}
+
+
+			for result.Next(ctx) {
+				fmt.Println(result)
+				fmt.Println()
+				fmt.Println(result.Record())
+				fmt.Println()
+				fmt.Println(result.Record().Values[0])
+				fmt.Println()
+				//fmt.Printf("Person name: '%s' \n", result.Record().Values[0].(string))
+			}
+
+
 		// Again, return any error back to driver to indicate rollback and
 		// retry in case of transient error.
 		return nil, result.Err()
@@ -103,10 +134,9 @@ func main() {
 		panic(err)
 	}
 }
-
-
 */
 
+/*
 func main() {
 
 	//NEO4J_URI := "neo4j+s://29be56aa.databases.neo4j.io"
@@ -180,3 +210,4 @@ type Item struct {
 	Id   int64
 	Name string
 }
+*/
